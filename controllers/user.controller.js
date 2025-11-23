@@ -17,7 +17,17 @@ const router = express.Router();
 // Register new user
 export const register = asyncHandler(async (req, res, next) => {
     try {
-        const { name, email, password, phoneNumber, role } = req.body;
+        const { name, email, password, phoneNumber, role, adminSecretKey } = req.body;
+
+        // Validate admin secret key if registering as admin
+        if (role === "admin") {
+            if (!adminSecretKey) {
+                return next(new errorHandler("Admin secret key is required for admin registration", 400));
+            }
+            if (adminSecretKey !== process.env.ADMIN_SECRET_KEY) {
+                return next(new errorHandler("Invalid admin secret key", 403));
+            }
+        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser)
