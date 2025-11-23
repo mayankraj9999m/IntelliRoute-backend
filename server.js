@@ -15,15 +15,23 @@ connectDB();
 
 const app = express();
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://intelliroute-frontend.onrender.com",
+    process.env.FRONTEND_URL, // Add from env variable
+].filter(Boolean); // Remove undefined values
+
 const corsOptions = {
     origin: function (origin, callback) {
-        // Check if the origin is defined (not a same-origin request)
-        // and if you want to perform any additional validation.
-        // For this case, we simply reflect the origin for any cross-origin request.
-        if (origin) {
-            callback(null, origin);
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
         } else {
-            callback(null, false); // For same-origin requests
+            console.log("CORS blocked origin:", origin);
+            callback(new Error("Not allowed by CORS"));
         }
     },
     credentials: true, // This enables the `Access-Control-Allow-Credentials` header

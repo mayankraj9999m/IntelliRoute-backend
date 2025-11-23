@@ -12,7 +12,7 @@ export const getJWTToken = (tokenData) => {
 
 export const setCookie = (res, payload) => {
     const defaultOptions = {
-        maxAge: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+        maxAge: process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000, // milliseconds, not Date
         httpOnly: true,
         // secure: process.env.NODE_ENV === "production",
         secure: true,
@@ -28,10 +28,10 @@ export const clearCookie = (res) => {
 
 export const setUserNameCookie = (res, userName) => {
     const defaultOptions = {
-        maxAge: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+        maxAge: process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000, // milliseconds, not Date
         httpOnly: false, // Allow frontend to read this cookie
         secure: true,
         sameSite: "None",
     };
     res.cookie("userName", userName, defaultOptions);
-};;
+};
